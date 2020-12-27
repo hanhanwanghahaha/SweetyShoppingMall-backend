@@ -63,7 +63,7 @@ public class JavaApi extends HttpServlet {
 				case "11":getOrderView(request,response);break;
 				case "12":getFeedback(request,response);break;
 				case "13":getForgetPassword(request,response);break;
-
+				case "14":getsearchlist(request,response);break;
 			}
 		}
 		else {
@@ -452,6 +452,27 @@ public class JavaApi extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
 		response.getWriter().write(res);
+	}
+
+	//搜索
+	protected void getsearchlist(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		String contents=request.getParameter("contents");//前端接受的参数
+		System.out.println(contents);
+		List<Map<String, Object>> searchall = null;//获取searchall设置为空
+		List<Object> params2 = new ArrayList<Object>();
+		DBHelper Dal=new DBHelper();
+		String strSqlpager=" select * from tbproduct where proname like ?";
+		//System.out.println(strSqlpager);
+		params2.add(contents);
+		try {
+
+			searchall=Dal.executeQuery(strSqlpager, params2);//将数据库里面搜索出来的数据传给searchall
+			String jsonstr = JSON.toJSONString(searchall);
+			response.getWriter().write(jsonstr);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	//获取新闻列表
